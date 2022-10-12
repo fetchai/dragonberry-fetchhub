@@ -1,89 +1,116 @@
 # Fetch.ai fetchd repository
 
-This repository contains the source code for validators on the Fetch network. The source is based on the [wasmd](https://github.com/CosmWasm/wasmd) variant of the Cosmos-SDK, which includes a virtual machine that compiles to WebAssembly. It contains Fetch.ai-specific updates required for the test networks and future mainnet, including a decentralized random beacon (DRB) and a novel, compact multi-signatures scheme. Versions of this repository are not currently synchronised with either wasmd or the Cosmos-SDK. Please refer to the [releases](https://github.com/fetchai/fetchd/releases) section for the compatibility with upstream versions.
+This repository contains a fork of the `fetchd` application that has had the dragonberry security patch applied.
 
-**Note**: Requires [Go 1.18+](https://golang.org/dl/)
+Due to the nature of the security vunerability, we want to keep information about this vunerability limited to a need to know basis. This effort is being coordinated across a number of other ecosystem chains.
 
-## Supported Systems
+- **Please DO NOT discuss this on group channels**
+- **If you have questions or comments please contact members of the Fetch.ai team via Discord DM**
 
-The supported systems are limited by the dlls created in [`go-cosmwasm`](https://github.com/CosmWasm/go-cosmwasm). In particular, **we only support MacOS and Linux**.
-For linux, the default is to build for glibc, and we cross-compile with CentOS 7 to provide
-backwards compatibility for `glibc 2.12+`. This includes all known supported distributions
-using glibc (CentOS 7 uses 2.12, obsolete Debian Jessy uses 2.19).
+## Formal Disclosure
 
-As of `0.5.x` we support `muslc` Linux systems, in particular **Alpine linux**,
-which is popular in docker distributions. Note that we do **not** store the
-static `muslc` build in the repo, so you must compile this yourself, and pass `-tags muslc`.
-Please look at the [`Dockerfile`](./Dockerfile) for an example of how we build a static Go
-binary for `muslc`. (Or just use this Dockerfile for your production setup).
+Shortly after this patch has been applied across the ecosystem, formal disclosures will begin. Ultimately this will mean that a `v0.10.7` upgrade will be released and will go through the formal governance proposal process.
 
-## Quick Start
+# What to do now?
 
-### Building and testing the project
+The patch is not consensus breaking (provided that the exploit has not been triggered). Therefore it is safe to upgrade your nodes.
 
-First, install golang >= v1.18 (follow the guide from [https://golang.org/dl/](https://golang.org/dl/)) and execute the following commands:
+We expect the majority of validators to be running `v0.10.5`, with some early adopters running `v0.10.6`. We have provided two versions of the patch for each of these cases.
 
-```bash
-# make sure you have the following packages:
-apt-get update && apt-get install -y make gcc
-
-# install fetchd. This will output the binary in ~/go/bin/ folder by default.
-make install
-```
-
-You should now have `fetchd` successfully installed in your path. You can check this with the following command:
-
-```bash
-which fetchd
-```
-
-This should return a path such as `~/go/bin/fetchd` (might be different depending on your actual go installation).
-
-> If you get no output, or an error such as `which: no fetchd in ...`, possible cause can either be that `make install` failed with some errors or that your go binary folder (default: ~/go/bin) is not in your `PATH`.
->
-> To add the ~/go/bin folder to your PATH, add this line at the end of your ~/.bashrc:
->
->```bash
->export PATH=$PATH:~/go/bin
->```
->
->and reload it with:
->
->```bash
->source ~/.bashrc
->```
-
-You can also verify that you are running the correct version
+To check which version you have run the following command:
 
 ```bash
 fetchd version
 ```
 
-This should print a version number that must be compatible with the network you're connecting to (see the [network page](../networks/) for the list of supported versions per network).
+## For nodes running `v0.10.5`
 
-If instead you have an error: `Error: failed to parse log level (main:info,state:info,:error): Unknown Level String: 'main:info,state:info,:error', defaulting to NoLevel`, this means you had a pre-stargate version of fetchd (<= v0.7.x), and just installed a stargate version (>= v0.8.x), you'll need to remove the previous configuration files with:
-
-```bash
-rm ~/.fetchd/config/app.toml ~/.fetchd/config/config.toml
-```
-
-Alternatively, you can also build without installing the binary with:
+You may already have the fetchd repository on your machine from the previous installation. If not, you can:
 
 ```bash
-make build
+git clone --branch v0.10.5+dragonberry.1 https://github.com/fetchai/fetchd.git fetchd_0.10.5_dragonberry
+cd fetchd_0.10.5_dragonberry
 ```
 
-The fetchd binary will be available under `./build/fetchd`.
+If you already have an existing clone, place yourself in and:
 
-## Run a simple local test network
+```bash
+git remote add dragonberry git@github.com:fetchai/dragonberry-fetchhub.git
+git fetch --all
+git clean -fd
+git checkout v0.10.5+dragonberry.1
+```
 
-The easiest way to get started with a simple network is to run the [docker-compose](https://docs.docker.com/compose/). The details of this can be found [here](https://github.com/fetchai/fetchd/blob/master/docker-compose.yml). By default it will launch a small 3 validator nodes network.
+Now you can install the new fetchd version:
 
-## Resources
+```bash
+make install
 
-1. [Website](https://fetch.ai/)
-2. [Documentation](https://docs.fetch.ai/ledger_v2/)
-3. [Discord Server](https://discord.gg/UDzpBFa)
-4. [Blog](https://fetch.ai/blog)
-5. [Community Website](https://community.fetch.ai/)
-6. [Community Telegram Group](https://t.me/fetch_ai)
+# and verify you now have the correct version:
+fetchd -h
+# must print fetchd help message
+
+fetchd version
+# must print v0.10.5+dragonberry.1
+```
+
+Make sure the version is correct before proceeding further!
+
+You're now ready to restart your node.
+
+## For nodes running `v0.10.6`
+
+You may already have the fetchd repository on your machine from the previous installation. If not, you can:
+
+```bash
+git clone --branch v0.10.6+dragonberry.1 https://github.com/fetchai/fetchd.git fetchd_0.10.6_dragonberry
+cd fetchd_0.10.6_dragonberry
+```
+
+If you already have an existing clone, place yourself in and:
+
+```bash
+git remote add dragonberry git@github.com:fetchai/dragonberry-fetchhub.git
+git fetch --all
+git clean -fd
+git checkout v0.10.6+dragonberry.1
+```
+
+Now you can install the new fetchd version:
+
+```bash
+make install
+
+# and verify you now have the correct version:
+fetchd -h
+# must print fetchd help message
+
+fetchd version
+# must print v0.10.6+dragonberry.1
+```
+
+Make sure the version is correct before proceeding further!
+
+You're now ready to restart your node.
+
+## Restarting fetchd
+
+Fetchd can now be restarted. The exact commands depends on your particular setup (systemd, cosmovisor...)
+
+After the restart the node should continue to produce blocks as normal.
+
+## Verify upgrade completed
+
+You can now query your local RPC endpoint to verify the right version is running and the node properly restarted:
+
+```bash
+curl -s http://localhost:26657/abci_info | jq -r '.result.response.version'
+
+# should say either: v0.10.5+dragonberry.1 or v0.10.6+dragonberry.1
+```
+
+Make sure this prints `v0.10.5+dragonberry.1` or `v0.10.6+dragonberry.1`, if not, double check you're on the right git tag in the fetchd repository, that the `make install` didn't produce errors, and that your properly restarted your node.
+
+## Notify the Fetch.ai Team
+
+Please message ejfitzgerald#6094 directly on discord to let the Fetch.ai team know when you have completed this upgrade or if you have run into any problems.
