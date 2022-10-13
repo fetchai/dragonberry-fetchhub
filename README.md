@@ -28,7 +28,7 @@ fetchd version
 You may already have the fetchd repository on your machine from the previous installation. If not, you can:
 
 ```bash
-git clone --branch v0.10.5+dragonberry.1 https://github.com/fetchai/fetchd.git fetchd_0.10.5_dragonberry
+git clone --branch v0.10.5+dragonberry.1 https://github.com/fetchai/dragonberry-fetchhub.git fetchd_0.10.5_dragonberry
 cd fetchd_0.10.5_dragonberry
 ```
 
