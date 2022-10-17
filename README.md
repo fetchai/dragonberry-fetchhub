@@ -2,11 +2,6 @@
 
 This repository contains a fork of the `fetchd` application that has had the dragonberry security patch applied.
 
-Due to the nature of the security vunerability, we want to keep information about this vunerability limited to a need to know basis. This effort is being coordinated across a number of other ecosystem chains.
-
-- **Please DO NOT discuss this on group channels**
-- **If you have questions or comments please contact members of the Fetch.ai team via Discord DM**
-
 ## Formal Disclosure
 
 Shortly after this patch has been applied across the ecosystem, formal disclosures will begin. Ultimately this will mean that a `v0.10.7` upgrade will be released and will go through the formal governance proposal process.
